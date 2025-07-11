@@ -38,7 +38,7 @@ public class GameEntity {
     private Long success;
 
     @Column
-    private Long locCount;
+    private Long locCount; // 찾은 장소 개수
 
     @Column
     private LocalDate gameDate;
