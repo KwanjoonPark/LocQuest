@@ -23,7 +23,6 @@ public class AuthService {
                     // 없으면 신규 등록
                     UserEntity newUser = new UserEntity();
                     newUser.setUserId(userInfo.getId());
-                    newUser.setEmail(userInfo.getEmail());
                     newUser.setNickname(userInfo.getNickname());
                     newUser.setProfileImage(userInfo.getProfileImage());
                     newUser.setRegisteredDate(LocalDateTime.now());

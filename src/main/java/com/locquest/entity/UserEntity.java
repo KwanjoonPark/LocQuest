@@ -26,9 +26,6 @@ public class UserEntity {
     private String profileImage;
 
     @Column
-    private String email;
-
-    @Column
     private LocalDateTime registeredDate;
 
     @PrePersist

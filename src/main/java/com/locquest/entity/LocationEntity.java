@@ -34,11 +34,11 @@ public class LocationEntity {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private CategoryEntity locCategory;
+    private CategoryEntity category;
 
     @Column
-    private Long locAsked;
+    private Integer locAsked;
 
     @Column
-    private Long locSuccessed;
+    private Integer locSuccessed;
 }
