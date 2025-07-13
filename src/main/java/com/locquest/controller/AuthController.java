@@ -1,13 +1,11 @@
 package com.locquest.controller;
 
+import com.locquest.dto.AuthCodeRequest;
 import com.locquest.dto.KakaoUserInfo;
 import com.locquest.service.AuthService;
 import com.locquest.service.KakaoOAuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
@@ -21,12 +19,23 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/kakaoLogin")
-    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> request) {
-        String kakaoAccessToken = request.get("accessToken");
+    public ResponseEntity<?> kakaoLogin(@RequestBody AuthCodeRequest req) {
+        String authCode = req.getAuthCode();
+        KakaoUserInfo userInfo = kakaoOAuthService.loginWithAuthCode(authCode);
 
-        KakaoUserInfo userInfo = kakaoOAuthService.getUserInfo(kakaoAccessToken);
         String jwt = authService.loginWithKakao(userInfo);
 
-        return ResponseEntity.ok(Map.of("jwt", jwt));
+        Map<String,Object> resp = Map.of(
+                "nickname", userInfo.getNickname(),
+                "profileImage", userInfo.getProfileImage(),
+                "jwt", jwt
+        );
+
+        return ResponseEntity.ok(resp);
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<Void> validate() {
+        return ResponseEntity.ok().build();
     }
 }

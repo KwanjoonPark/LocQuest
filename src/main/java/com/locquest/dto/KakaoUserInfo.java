@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class KakaoUserInfo {
     private Long id;
-    private String email;
     private String nickname;
     private String profileImage;
 
@@ -18,7 +17,6 @@ public class KakaoUserInfo {
     public String toString() {
         return "KakaoUserInfo{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 '}';
