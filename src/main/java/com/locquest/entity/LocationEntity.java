@@ -37,7 +37,7 @@ public class LocationEntity {
     private CategoryEntity category;
 
     @Column
-    private Integer locAsked;
+    private Integer locFailed;
 
     @Column
     private Integer locSuccessed;
