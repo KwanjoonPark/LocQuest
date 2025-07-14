@@ -2,8 +2,6 @@ package com.locquest.controller;
 
 import com.locquest.dto.ranking.ExplorerRankEntry;
 import com.locquest.dto.ranking.TimeAttackRankEntry;
-import com.locquest.dto.ranking.getExplorerRankingResponse;
-import com.locquest.dto.ranking.getTimeAttackRankingResponse;
 import com.locquest.service.RankingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
