@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class SendSuccessRequest {
+    private Long userId;
     private Long locId;
     private Long gameId;
 

@@ -25,8 +25,8 @@ public class GameService {
     private final LocationRepository locationRepository;
     private final CompleteRepository completeRepository;
 
-    public GameEntity createGame(Long userId, GameStartRequest request) {
-        UserEntity user = userRepository.findById(userId).orElseThrow();
+    public GameEntity createGame(GameStartRequest request) {
+        UserEntity user = userRepository.findById(request.getUserId()).orElseThrow();
         CategoryEntity category = categoryRepository.findById(request.getLocCategory()).orElseThrow();
 
         GameEntity game = GameEntity.builder()
@@ -52,8 +52,8 @@ public class GameService {
                 .toList();
     }
 
-    public CompleteEntity recordComplete(Long userId, SendSuccessRequest request) {
-        UserEntity user = userRepository.findById(userId).orElseThrow();
+    public CompleteEntity recordComplete(SendSuccessRequest request) {
+        UserEntity user = userRepository.findById(request.getUserId()).orElseThrow();
         LocationEntity location = locationRepository.findById(request.getLocId()).orElseThrow();
         GameEntity game = gameRepository.findById(request.getGameId()).orElseThrow();
 

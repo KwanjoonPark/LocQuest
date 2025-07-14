@@ -10,7 +10,6 @@ import com.locquest.service.GameService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +25,11 @@ public class GameController {
     private final GameService gameService;
 
     @PostMapping("/startGame")
-    public ResponseEntity<GameStartResponse> startGame(@RequestBody GameStartRequest request, Authentication authentication) {
-        Long userId = (Long) authentication.getPrincipal();
-        System.out.println("userId from JWT = " + userId);
+    public ResponseEntity<GameStartResponse> startGame(@RequestBody GameStartRequest request) {
+
 
         // 게임 생성
-        GameEntity savedGame = gameService.createGame(userId, request);
+        GameEntity savedGame = gameService.createGame(request);
 
         // 랜덤으로 위치 사진 5개 뽑기
         List<LocationEntity> locations = gameService.getRandomLocationsByCategory(savedGame.getLocCategory().getCategoryId());
@@ -45,16 +43,14 @@ public class GameController {
     }
 
     @PostMapping("/sendSuccess")
-    public ResponseEntity<Void> sendSuccess(@RequestBody SendSuccessRequest request, Authentication authentication) {
-        Long userId = (Long) authentication.getPrincipal();
-        gameService.recordComplete(userId, request);
+    public ResponseEntity<Void> sendSuccess(@RequestBody SendSuccessRequest request) {
+        gameService.recordComplete(request);
         gameService.countSuccess(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/endGame")
-    public ResponseEntity<Void> endGame(@RequestBody EndGameRequest request, Authentication authentication) {
-        Long userId = (Long) authentication.getPrincipal();
+    public ResponseEntity<Void> endGame(@RequestBody EndGameRequest request) {
         gameService.finishGame(request);
         gameService.failedLocations(request.getFailedLocations());
         return ResponseEntity.ok().build();
