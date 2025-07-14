@@ -33,10 +33,10 @@ public class GameEntity {
     private LocalDateTime endTime; // 게임 종료 시간
 
     @Column
-    private Long success; // 게임 성공 여부
+    private Boolean success; // 게임 성공 여부
 
     @Column
-    private Long locCount; // 찾은 장소 개수
+    private Integer locCount; // 찾은 장소 개수
 
     @Column
     private LocalDate gameDate; // 게임 실행 일자
@@ -46,6 +46,6 @@ public class GameEntity {
     private CategoryEntity locCategory;
 
     @Column
-    private Long gameChance; // 사용한 게임 힌투 수
+    private Integer gameChance; // 사용한 게임 힌투 수
 }
 

@@ -1,2 +1,95 @@
-package com.locquest.service;public class GameService {
+package com.locquest.service;
+
+import com.locquest.dto.EndGameRequest;
+import com.locquest.dto.GameStartRequest;
+import com.locquest.dto.SendSuccessRequest;
+import com.locquest.entity.*;
+import com.locquest.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class GameService {
+
+    private final GameRepository gameRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
+    private final CompleteRepository completeRepository;
+
+    public GameEntity createGame(Long userId, GameStartRequest request) {
+        UserEntity user = userRepository.findById(userId).orElseThrow();
+        CategoryEntity category = categoryRepository.findById(request.getLocCategory()).orElseThrow();
+
+        GameEntity game = GameEntity.builder()
+                .user(user)
+                .gameMode(request.getGameMode())
+                .gameDate(request.getGameDate())
+                .startTime(request.getStartTime())
+                .locCategory(category)
+                .build();
+
+        return gameRepository.save(game);
+    }
+
+    public List<LocationEntity> getRandomLocationsByCategory(Long categoryId) {
+        CategoryEntity category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("카테고리 없음"));
+
+        List<LocationEntity> allLocations = locationRepository.findByCategory(category);
+
+        Collections.shuffle(allLocations); // ✅ 섞고
+        return allLocations.stream()
+                .limit(5) // ✅ 앞에서 5개만 추출
+                .toList();
+    }
+
+    public CompleteEntity recordComplete(Long userId, SendSuccessRequest request) {
+        UserEntity user = userRepository.findById(userId).orElseThrow();
+        LocationEntity location = locationRepository.findById(request.getLocId()).orElseThrow();
+        GameEntity game = gameRepository.findById(request.getGameId()).orElseThrow();
+
+        CompleteEntity complete = CompleteEntity.builder()
+                .user(user)
+                .location(location)
+                .game(game)
+                .build();
+
+        return completeRepository.save(complete);
+    }
+
+    public LocationEntity countSuccess(SendSuccessRequest request) {
+        LocationEntity location = locationRepository.findById(request.getLocId()).orElseThrow();
+        location.setLocSuccessed(location.getLocSuccessed() + 1);
+        return locationRepository.save(location);
+    }
+
+    public GameEntity finishGame(EndGameRequest request) {
+        GameEntity game = gameRepository.findById(request.getGameId()).orElseThrow();
+        game.setGameChance(request.getHintCount());
+        game.setLocCount(request.getLocCount());
+        game.setSuccess(request.getSuccess());
+        game.setEndTime(request.getEndTime());
+        return gameRepository.save(game);
+    }
+
+    public List<LocationEntity> failedLocations(List<LocationEntity> locationList) {
+        List<LocationEntity> updatedList = new ArrayList<>();
+        for (LocationEntity failedLocation : locationList) {
+            LocationEntity location = locationRepository.findById(failedLocation.getLocId()).orElseThrow();
+            location.setLocFailed(location.getLocFailed() + 1);
+            LocationEntity saved = locationRepository.save(location);
+            updatedList.add(saved);
+        }
+
+        return updatedList;
+    }
 }
