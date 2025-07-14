@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class GameStartRequest {
+    private Long userId;
     private LocalDateTime startTime;
     private String gameMode;
     private LocalDate gameDate;
