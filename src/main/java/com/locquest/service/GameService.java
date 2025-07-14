@@ -74,7 +74,7 @@ public class GameService {
 
     public GameEntity finishGame(EndGameRequest request) {
         GameEntity game = gameRepository.findById(request.getGameId()).orElseThrow();
-        game.setGameChance(request.getHintCount());
+        game.setHintCount(request.getHintCount());
         game.setLocCount(request.getLocCount());
         game.setSuccess(request.getSuccess());
         game.setEndTime(request.getEndTime());

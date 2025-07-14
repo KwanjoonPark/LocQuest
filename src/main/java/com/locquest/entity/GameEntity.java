@@ -46,6 +46,6 @@ public class GameEntity {
     private CategoryEntity locCategory;
 
     @Column
-    private Integer gameChance; // 사용한 게임 힌투 수
+    private Integer hintCount; // 사용한 게임 힌투 수
 }
 
