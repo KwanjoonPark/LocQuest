@@ -1,5 +1,6 @@
 package com.locquest.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,9 +28,11 @@ public class GameEntity {
     private String gameMode; // EXPLORER, TIME ATTACK 모드
 
     @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime; // 게임 시작 시간
 
     @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endTime; // 게임 종료 시간
 
     @Column
@@ -39,6 +42,7 @@ public class GameEntity {
     private Integer locCount; // 찾은 장소 개수
 
     @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate gameDate; // 게임 실행 일자
 
     @ManyToOne
