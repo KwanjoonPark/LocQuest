@@ -27,7 +27,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll() // 로그인/회원가입 허용
-                        .requestMatchers(HttpMethod.POST, "/game/startGame").permitAll()
+                        .requestMatchers("/game/**").permitAll()
+                        .requestMatchers("/location/**").permitAll()
                         .anyRequest().authenticated()            // 나머지는 인증 필요
                 );
                 //.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
