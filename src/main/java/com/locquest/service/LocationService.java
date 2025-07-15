@@ -1,7 +1,9 @@
 package com.locquest.service;
 
 import com.locquest.dto.UpLoadLocationRequest;
+import com.locquest.entity.CategoryEntity;
 import com.locquest.entity.LocationEntity;
+import com.locquest.repository.CategoryRepository;
 import com.locquest.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,15 @@ import java.util.UUID;
 public class LocationService {
 
     private final LocationRepository locationRepository;
+    private final CategoryRepository categoryRepository;
 
     public LocationEntity createLocation(UpLoadLocationRequest request, String savedPath) {
+        CategoryEntity category = categoryRepository.findById(request.getCategoryId()).orElseThrow();
         LocationEntity location = LocationEntity.builder()
                 .locName(request.getLocName())
                 .locLat(request.getLatitude())
                 .locLng(request.getLongitude())
+                .category(category)
                 .locImage(savedPath)
                 .build();
 
