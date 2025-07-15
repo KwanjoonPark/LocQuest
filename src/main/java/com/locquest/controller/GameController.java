@@ -1,19 +1,15 @@
 package com.locquest.controller;
 
-import com.locquest.dto.EndGameRequest;
-import com.locquest.dto.GameStartRequest;
-import com.locquest.dto.GameStartResponse;
-import com.locquest.dto.SendSuccessRequest;
+import com.locquest.dto.*;
+import com.locquest.entity.CategoryEntity;
 import com.locquest.entity.GameEntity;
 import com.locquest.entity.LocationEntity;
+import com.locquest.repository.CategoryRepository;
 import com.locquest.service.GameService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,7 +20,17 @@ import java.util.List;
 public class GameController {
     private final GameService gameService;
 
-    @PostMapping("/startGame")
+    @GetMapping(value = "/getCategories", produces = "application/json; charset=UTF-8")
+    public ResponseEntity<GetCategoryResponse> getCategories() {
+        List<CategoryEntity> categoryList = gameService.getAllCategories();
+
+        GetCategoryResponse response = new GetCategoryResponse();
+        response.setCategoryList(categoryList);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/startGame", produces = "application/json; charset=UTF-8")
     public ResponseEntity<GameStartResponse> startGame(@RequestBody GameStartRequest request) {
 
 
@@ -50,9 +56,11 @@ public class GameController {
     }
 
     @PostMapping("/endGame")
-    public ResponseEntity<Void> endGame(@RequestBody EndGameRequest request) {
+    public ResponseEntity<EndGameResponse> endGame(@RequestBody EndGameRequest request) {
         gameService.finishGame(request);
         gameService.failedLocations(request.getFailedLocations());
-        return ResponseEntity.ok().build();
+        Double elapsed = gameService.calculateTime(request);
+        EndGameResponse resp = new EndGameResponse(elapsed);
+        return ResponseEntity.ok(resp);
     }
 }
