@@ -1,14 +1,13 @@
 package com.locquest.service;
 
-import com.locquest.dto.EndGameRequest;
-import com.locquest.dto.GameStartRequest;
-import com.locquest.dto.SendSuccessRequest;
+import com.locquest.dto.*;
 import com.locquest.entity.*;
 import com.locquest.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +60,7 @@ public class GameService {
                 .user(user)
                 .location(location)
                 .game(game)
+                .completeDate(request.getCompleteDate())
                 .build();
 
         return completeRepository.save(complete);
@@ -81,15 +81,27 @@ public class GameService {
         return gameRepository.save(game);
     }
 
-    public List<LocationEntity> failedLocations(List<LocationEntity> locationList) {
+    public List<LocationEntity> failedLocations(List<Long> locationList) {
         List<LocationEntity> updatedList = new ArrayList<>();
-        for (LocationEntity failedLocation : locationList) {
-            LocationEntity location = locationRepository.findById(failedLocation.getLocId()).orElseThrow();
+        for (Long failedLocation : locationList) {
+            LocationEntity location = locationRepository.findById(failedLocation).orElseThrow();
             location.setLocFailed(location.getLocFailed() + 1);
             LocationEntity saved = locationRepository.save(location);
             updatedList.add(saved);
         }
 
         return updatedList;
+    }
+
+    public List<CategoryEntity> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    public Double calculateTime(EndGameRequest request) {
+        GameEntity game = gameRepository.findById(request.getGameId()).orElseThrow();
+        LocalDateTime startTime = game.getStartTime();
+        LocalDateTime endTime = request.getEndTime();
+        Duration dur = Duration.between(startTime, endTime);
+        return dur.toMillis() / 1_000.0;
     }
 }

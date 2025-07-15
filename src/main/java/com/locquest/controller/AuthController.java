@@ -26,6 +26,7 @@ public class AuthController {
         String jwt = authService.loginWithKakao(userInfo);
 
         Map<String,Object> resp = Map.of(
+                "userId", userInfo.getId(),
                 "nickname", userInfo.getNickname(),
                 "profileImage", userInfo.getProfileImage(),
                 "jwt", jwt
